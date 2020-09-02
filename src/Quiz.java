@@ -73,7 +73,7 @@ public class Quiz {
         }
 
         for (Sensor tmp : sensorList) {
-            System.out.println("Device name: " + tmp.getDeviceName() + ", File name is : " + tmp.getFactorDataSetFileName() + ", attached to " + tmp.getIsAttachedTo());
+            System.out.println("Device name: " + tmp.getDeviceName() + ", File name is : " + tmp.getFactorDataSetFileName() + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
         }
 
 
@@ -103,10 +103,13 @@ public class Quiz {
                 if (readAfterPatient && !patientList.isEmpty()) {
                     BloodPressureSensor bps = new BloodPressureSensor(row[1], row[2], Double.parseDouble(row[3]), Double.parseDouble(row[4]), patientList.get(patientList.size() - 1).getName());
                     sensorList.add(bps);
+                }else {
+                    System.out.println("Device must be read after patient!");
+                    return;
                 }
-
                 break;
             case TEMPERATURE:
+
                 break;
         }
     }
