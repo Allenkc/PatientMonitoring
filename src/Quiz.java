@@ -13,9 +13,11 @@ public class Quiz {
 
     public static long allTimePeriod;
 
-    public static boolean readAfterPatient = false;
+    // TODO 確認是否需要flag去記錄正在讀patient or sensor
 
     public static List<Patient> patientList = new ArrayList<>();
+
+//    public static Patient currentPatient;
 
     public static List<Sensor> sensorList = new ArrayList<>();
 
@@ -46,8 +48,8 @@ public class Quiz {
             String[] row =
                     line.split("\\s+");
             if (isPatient(row[0])) {
-                patientList.add(new Patient(row[1], Long.parseLong(row[2])));
-                readAfterPatient = true;
+                // add new patient
+                patientList.add(new Patient(row[1], Long.parseLong(row[2]), new ArrayList<>()));
             } else if (null != SensorType.toSensorType(row[0])) {
 
                 addSensor(row);
@@ -73,14 +75,18 @@ public class Quiz {
         }
 
         for (Sensor tmp : sensorList) {
-            System.out.println("Device name: " + tmp.getDeviceName() + ", File name is : " + tmp.getFactorDataSetFileName() + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
+            System.out.println("Device name: " + tmp.getDeviceName() + ", File name is : " + tmp.getFactorDataSetFileName()
+                    + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
         }
 
 
-        // TODO 開始倒數 取得的millisecond 用timer??
-        for (long index = 0; index <= allTimePeriod; index = +1) {
+        // TODO 開始倒數
+        for (long index = 0; index <= allTimePeriod; index += 1) {
 
 
+            System.out.println("Time : " + index);
+            // TODO 檢查patient time period 去讀sensor
+            // 監控的當下去 存DB
         }
 
     }
@@ -100,10 +106,16 @@ public class Quiz {
             case PULSESENSOR:
                 break;
             case BLOODPRESSURESENSOR:
-                if (readAfterPatient && !patientList.isEmpty()) {
-                    BloodPressureSensor bps = new BloodPressureSensor(row[1], row[2], Double.parseDouble(row[3]), Double.parseDouble(row[4]), patientList.get(patientList.size() - 1).getName());
+                if (!patientList.isEmpty()) {
+                    int currentPateintIndex = patientList.size() - 1;
+                    BloodPressureSensor bps = new BloodPressureSensor(row[1], row[2], Double.parseDouble(row[3]), Double.parseDouble(row[4]),
+                            patientList.get(currentPateintIndex).getName());
+
+                    // 把sensor 貼到 patient上
+                    patientList.get(currentPateintIndex).getAttachedSensors().add(bps);
+
                     sensorList.add(bps);
-                }else {
+                } else {
                     System.out.println("Device must be read after patient!");
                     return;
                 }
