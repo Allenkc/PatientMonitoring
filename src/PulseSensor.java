@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BloodPressureSensor implements Sensor {
+public class PulseSensor implements Sensor {
 
     private String sensorType;
     private String deviceName;
@@ -15,10 +15,10 @@ public class BloodPressureSensor implements Sensor {
     private List<Double> factorValue;
     private int detectCounter;
 
-    public BloodPressureSensor() {
+    public PulseSensor() {
     }
 
-    public BloodPressureSensor(String deviceName, String factorDataSetFileName, double safeRangeLowerBound, double safeRangeUpperBound, String isAttachedTo, String sensorType) {
+    public PulseSensor(String deviceName, String factorDataSetFileName, double safeRangeLowerBound, double safeRangeUpperBound, String isAttachedTo, String sensorType) {
         this.deviceName = deviceName;
         this.factorDataSetFileName = factorDataSetFileName;
         this.safeRangeLowerBound = safeRangeLowerBound;
@@ -113,7 +113,7 @@ public class BloodPressureSensor implements Sensor {
 
         double nowValue = -1;
 
-        if (detectCounter <= factorValue.size() - 1) {
+        if (detectCounter < factorValue.size() - 1) {
             nowValue = factorValue.get(detectCounter);
         }
 
