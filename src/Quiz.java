@@ -43,7 +43,6 @@ public class Quiz {
         }
         line = reader.readLine();
 
-        List<String> rowInput = new ArrayList<>();
         while (line != null) {
             String[] row =
                     line.split("\\s+");
@@ -62,6 +61,11 @@ public class Quiz {
             line = reader.readLine();
         }
 
+        // read dataset to mock sensor behavior
+        for (Sensor sensor : sensorList) {
+            sensor.readFactorValue();
+        }
+
         /**
          * After you reach end-of-file in input file, system starts to monitor.
          * While system starts to monitor, the timestamp is 0.
@@ -70,21 +74,42 @@ public class Quiz {
          *
          * You can use for-loop counter as millisecond timestamp.
          */
-        for (Patient tmp : patientList) {
-            System.out.println("Patient: " + tmp.getName() + ", period is " + tmp.getFrequency());
-        }
-
-        for (Sensor tmp : sensorList) {
-            System.out.println("Device name: " + tmp.getDeviceName() + ", File name is : " + tmp.getFactorDataSetFileName()
-                    + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
-        }
+//        for (Patient tmp : patientList) {
+//            System.out.println("Patient: " + tmp.getName() + ", period is " + tmp.getFrequency());
+//        }
+//
+//        for (Sensor tmp : sensorList) {
+//            System.out.println("Device name: " + tmp.getDeviceName() + ", File name is : " + tmp.getFactorDataSetFileName()
+//                    + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
+//        }
 
 
         // TODO 開始倒數
         for (long index = 0; index <= allTimePeriod; index += 1) {
 
+            for (Patient pt : patientList) {
+                if (index % pt.getFrequency() == 0) {
 
-            System.out.println("Time : " + index);
+                    // 病人的檢查周期到了
+                    for (Sensor ptSensor : pt.getAttachedSensors()) {
+
+                        // 檢查有沒有在安全範圍內
+                        if (ptSensor.showValue() == -1) {
+                            System.out.println("[" + index + "]" + " " + ptSensor.getDeviceName() + " falls");
+                        } else if (ptSensor.showValue() < ptSensor.getSafeRangeLowerBound()
+                                || ptSensor.showValue() > ptSensor.getSafeRangeUpperBound()) {
+                            System.out.println("[" + index + "]" + " " + pt.getName() + " is in danger! " +
+                                    "Cause: " + ptSensor.getDeviceName() + " " + ptSensor.showValue());
+                        }
+
+                        ptSensor.incrementCounter();
+                    }
+
+                }
+
+
+            }
+
             // TODO 檢查patient time period 去讀sensor
             // 監控的當下去 存DB
         }
@@ -125,4 +150,6 @@ public class Quiz {
                 break;
         }
     }
+
+
 }
