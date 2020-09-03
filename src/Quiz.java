@@ -83,6 +83,7 @@ public class Quiz {
 //                    + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
 //        }
 
+        FactorDatabase database = new FactorDatabase();
 
         // TODO 開始倒數
         for (long index = 0; index <= allTimePeriod; index += 1) {
@@ -102,16 +103,15 @@ public class Quiz {
                                     "Cause: " + ptSensor.getDeviceName() + " " + ptSensor.showValue());
                         }
 
+                        // TODO 監控的當下去 存DB
+//                        database.save(pt.getName() , pt , ptSensor , index , ptSensor.showValue());
                         ptSensor.incrementCounter();
                     }
 
                 }
 
-
             }
 
-            // TODO 檢查patient time period 去讀sensor
-            // 監控的當下去 存DB
         }
 
     }
@@ -129,12 +129,25 @@ public class Quiz {
 
         switch (sensorType) {
             case PULSESENSOR:
+                if (!patientList.isEmpty()) {
+                    int currentPateintIndex = patientList.size() - 1;
+                    PulseSensor pss = new PulseSensor(row[1], row[2], Double.parseDouble(row[3]), Double.parseDouble(row[4]),
+                            patientList.get(currentPateintIndex).getName(), SensorType.PULSESENSOR.getName());
+
+                    // 把sensor 貼到 patient上
+                    patientList.get(currentPateintIndex).getAttachedSensors().add(pss);
+
+                    sensorList.add(pss);
+                } else {
+                    System.out.println("Device must be read after patient!");
+                    return;
+                }
                 break;
             case BLOODPRESSURESENSOR:
                 if (!patientList.isEmpty()) {
                     int currentPateintIndex = patientList.size() - 1;
                     BloodPressureSensor bps = new BloodPressureSensor(row[1], row[2], Double.parseDouble(row[3]), Double.parseDouble(row[4]),
-                            patientList.get(currentPateintIndex).getName());
+                            patientList.get(currentPateintIndex).getName(), SensorType.BLOODPRESSURESENSOR.getName());
 
                     // 把sensor 貼到 patient上
                     patientList.get(currentPateintIndex).getAttachedSensors().add(bps);
@@ -146,6 +159,19 @@ public class Quiz {
                 }
                 break;
             case TEMPERATURE:
+                if (!patientList.isEmpty()) {
+                    int currentPateintIndex = patientList.size() - 1;
+                    TemperatureSensor ts = new TemperatureSensor(row[1], row[2], Double.parseDouble(row[3]), Double.parseDouble(row[4]),
+                            patientList.get(currentPateintIndex).getName(), SensorType.TEMPERATURE.getName());
+
+                    // 把sensor 貼到 patient上
+                    patientList.get(currentPateintIndex).getAttachedSensors().add(ts);
+
+                    sensorList.add(ts);
+                } else {
+                    System.out.println("Device must be read after patient!");
+                    return;
+                }
 
                 break;
         }
