@@ -4,16 +4,21 @@ import java.util.List;
 public class FactorDataTuple {
 
     private Patient patient;
-    private Sensor sensor;
-    private List<Record> records = new ArrayList<>();
+//    private Sensor sensor;
+//    private List<Record> records;
+    private List<SensorData> sensorDataList;
 
     public FactorDataTuple() {
     }
 
-    public FactorDataTuple(Patient patient, Sensor sensor, List<Record> records) {
+    public FactorDataTuple(Patient patient) {
         this.patient = patient;
-        this.sensor = sensor;
-        this.records = records;
+        this.sensorDataList = new ArrayList<>();
+    }
+
+    public FactorDataTuple(Patient patient, List<SensorData> sensorDataList) {
+        this.patient = patient;
+        this.sensorDataList = sensorDataList;
     }
 
     public Patient getPatient() {
@@ -24,23 +29,7 @@ public class FactorDataTuple {
         this.patient = patient;
     }
 
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
-    }
-
-    public List<Record> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    public void addRecord(long timeCheckPoint , double factorValue){
-        this.records.add(new Record(timeCheckPoint , factorValue));
+    public void addSensorData(SensorData sensorData){
+        this.sensorDataList.add(sensorData);
     }
 }

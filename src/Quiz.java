@@ -13,11 +13,7 @@ public class Quiz {
 
     public static long allTimePeriod;
 
-    // TODO 確認是否需要flag去記錄正在讀patient or sensor
-
     public static List<Patient> patientList = new ArrayList<>();
-
-//    public static Patient currentPatient;
 
     public static List<Sensor> sensorList = new ArrayList<>();
 
@@ -26,10 +22,6 @@ public class Quiz {
         if (null == args[0]) {
             throw new IllegalArgumentException();
         }
-
-//        File file = new File(".");
-        // List Files
-//        for(String fileNames : file.list()) System.out.println(fileNames);
 
         String fileName = args[0];
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -122,7 +114,12 @@ public class Quiz {
         return patient.equalsIgnoreCase(rawStr);
     }
 
-    // TODO 檢查Sensor格式
+    /**
+     * TODO 先暴力解三種sensor
+     * TODO 檢查Sensor格式
+     *
+     * @param row
+     */
     private static void addSensor(String[] row) {
 
         SensorType sensorType = SensorType.values()[SensorType.toSensorType(row[0]).ordinal()];
@@ -172,7 +169,6 @@ public class Quiz {
                     System.out.println("Device must be read after patient!");
                     return;
                 }
-
                 break;
         }
     }
