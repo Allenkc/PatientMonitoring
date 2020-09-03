@@ -113,7 +113,7 @@ public class PulseSensor implements Sensor {
 
         double nowValue = -1;
 
-        if (detectCounter < factorValue.size() - 1) {
+        if (detectCounter <= factorValue.size() - 1) {
             nowValue = factorValue.get(detectCounter);
         }
 
