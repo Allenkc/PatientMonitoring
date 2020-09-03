@@ -2,6 +2,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * 結構範例:
+ * patient Mark  <--- 當Key
+ *
+ * BloodPressureSensor sensor1  <---- List<SensorData>
+ * [0] 150.0
+ * [600] 123.0
+ * [1200] -1.0
+ * [1800] 200.0
+ * [2400] -1.0
+ * [3000] -1.0
+ * BloodPressureSensor sensor2
+ * 以下略
+ *
+ * 一個病人有多組sensor & 其數值資料
+ *
+ */
+
 public class FactorDatabase {
 
     //    private List<FactorDataTuple> tuples;
