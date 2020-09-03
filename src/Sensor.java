@@ -10,4 +10,5 @@ public interface Sensor {
     void readFactorValue() throws IOException;
     double showValue();
     void incrementCounter();
+    String getSensorTypeName();
 }

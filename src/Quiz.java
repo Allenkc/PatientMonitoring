@@ -95,7 +95,7 @@ public class Quiz {
                                     "Cause: " + ptSensor.getDeviceName() + " " + ptSensor.showValue());
                         }
 
-                        // TODO 監控的當下去 存DB
+                        // TODO 監控的當下去存DB
 //                        database.save(pt.getName() , pt , ptSensor , index , ptSensor.showValue());
                         ptSensor.incrementCounter();
                     }

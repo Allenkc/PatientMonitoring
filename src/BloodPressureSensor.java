@@ -124,4 +124,8 @@ public class BloodPressureSensor implements Sensor {
         detectCounter++;
     }
 
+    @Override
+    public String getSensorTypeName() {
+        return this.sensorType;
+    }
 }

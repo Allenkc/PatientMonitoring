@@ -124,4 +124,9 @@ public class PulseSensor implements Sensor {
         detectCounter++;
     }
 
+    @Override
+    public String getSensorTypeName() {
+        return this.sensorType;
+    }
+
 }
