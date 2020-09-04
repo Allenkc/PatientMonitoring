@@ -116,7 +116,6 @@ public class Quiz {
     }
 
     /**
-     * TODO 先暴力解三種sensor
      * TODO 檢查Sensor格式
      */
     private static void addSensor(String[] row) {
