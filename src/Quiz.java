@@ -1,24 +1,17 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-
-/**
- * 最後記得把src拿掉打平
- */
 
 public class Quiz {
 
-    public static final String patient = "patient";
+    private static final String patient = "patient";
 
-    public static long allTimePeriod;
+    private static List<Patient> patientList = new ArrayList<>();
 
-    public static List<Patient> patientList = new ArrayList<>();
+    private static List<Sensor> sensorList = new ArrayList<>();
 
-    public static List<Sensor> sensorList = new ArrayList<>();
-
-    public static FactorDatabase factorDatabase = new FactorDatabase();
+    private static FactorDatabase factorDatabase = new FactorDatabase();
 
     public static void main(String[] args) throws Exception {
 
@@ -30,6 +23,7 @@ public class Quiz {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
 
         String line = reader.readLine();
+        long allTimePeriod;
         if (line.chars().allMatch(Character::isDigit)) {
             allTimePeriod = Long.parseLong(line);
         } else {
@@ -78,7 +72,7 @@ public class Quiz {
 //                    + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
 //        }
 
-        // TODO 開始倒數
+        // 開始倒數
         for (long index = 0; index <= allTimePeriod; index += 1) {
 
             for (Patient pt : patientList) {
@@ -92,16 +86,15 @@ public class Quiz {
                             System.out.println("[" + index + "]" + " " + ptSensor.getDeviceName() + " falls");
                         } else if (ptSensor.showValue() < ptSensor.getSafeRangeLowerBound()
                                 || ptSensor.showValue() > ptSensor.getSafeRangeUpperBound()) {
-                            System.out.println("[" + index + "]" + " " + pt.getName() + " is in danger! " +
-                                    "Cause: " + ptSensor.getDeviceName() + " " + ptSensor.showValue());
+                            ptSensor.alarm(index, pt.getName(), ptSensor.getDeviceName(), ptSensor.showValue());
                         }
 
-                        // TODO 監控的當下去存DB
+                        // 監控的當下去存DB
                         FactorDataEntity entity = new FactorDataEntity();
                         entity.setSensorTypeName(ptSensor.getSensorTypeName());
                         entity.setSensorName(ptSensor.getDeviceName());
                         entity.setPatientName(pt.getName());
-                        Record updateRecord = new Record(index,ptSensor.showValue());
+                        Record updateRecord = new Record(index, ptSensor.showValue());
                         entity.setRecord(updateRecord);
                         factorDatabase.add(entity);
                         ptSensor.incrementCounter();
@@ -123,10 +116,7 @@ public class Quiz {
     }
 
     /**
-     * TODO 先暴力解三種sensor
      * TODO 檢查Sensor格式
-     *
-     * @param row
      */
     private static void addSensor(String[] row) {
 
