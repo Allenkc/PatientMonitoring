@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO 抽Sensor Abstract Class
+ *
+ */
+
 public class BloodPressureSensor implements Sensor {
 
     private String sensorType;

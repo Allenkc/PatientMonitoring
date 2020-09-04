@@ -1,77 +1,105 @@
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 結構範例:
+ * patient Mark  <--- 當Key
+ * <p>
+ * BloodPressureSensor sensor1  <---- List<SensorData>
+ * [0] 150.0
+ * [600] 123.0
+ * [1200] -1.0
+ * [1800] 200.0
+ * [2400] -1.0
+ * [3000] -1.0
+ * BloodPressureSensor sensor2
+ * 以下略
+ * <p>
+ * 一個病人有多組sensor & 其數值資料
+ */
+
 public class FactorDatabase {
 
-    //    private List<FactorDataTuple> tuples;
-    private Map<String, FactorDataTuple> tuples = new LinkedHashMap<>();
+    private Map<String, List<SensorData>> tuples;
 
     public FactorDatabase() {
+        this.tuples = new LinkedHashMap<>();
     }
 
-    public FactorDatabase(Map<String, FactorDataTuple> tuples) {
-        this.tuples = tuples;
-    }
-
-    public Map<String, FactorDataTuple> getTuples() {
+    public Map<String, List<SensorData>> getTuples() {
         return tuples;
     }
 
-    public void setTuples(Map<String, FactorDataTuple> tuples) {
-        this.tuples = tuples;
-    }
 
-    public void save(String key, Patient patient, List<SensorData> sensorDataList,
-                     long timeCheckPoint, double factorValue) {
+    public void add(FactorDataEntity entity) {
 
-        //TODO 有KEY表示存在 要update
-        if (tuples.containsKey(key)) {
-//            tuples.get(key).addSensorData();
-        } else {
-//            tuples.put(key, new FactorDataTuple(patient, ));
-        }
-
-    }
-
-    public void save(FactorDataEntity entity) {
-
-        // 檢查病人資料是否存在? patient name 當key
         if (tuples.containsKey(entity.getPatientName())) {
-            // TODO 存在 則update
-            FactorDataTuple tmp = tuples.get(entity.getPatientName());
+
+            // 病患已存在，確認要加sensorData 還是只要更新Record
+            this.addSensorDataByPatientName(entity);
+
         } else {
-            // TODO 不存在，建立新資料
-            tuples.put(entity.getPatientName(), this.makeTuple(entity.getPatientName(), entity.getSensorTypeName(),
-                    entity.getSensorName(), entity.getRecord().getTimeCheckPoint(), entity.getRecord().getFactorValue()));
+            // 寫入全新資料
+            SensorData updataData = new SensorData();
+            updataData.setSensorTypeName(entity.getSensorTypeName());
+            updataData.setSensorName(entity.getSensorName());
+            List<Record> recordList = new ArrayList<>();
+            recordList.add(entity.getRecord());
+            updataData.setRecords(recordList);
+
+            List<SensorData> sensorDataList = new ArrayList<>();
+            sensorDataList.add(updataData);
+            tuples.put(entity.getPatientName(), sensorDataList);
         }
 
     }
 
-    public FactorDataTuple makeTuple(String patientName, String sensorTypeName, String sensorName,
-                                     long timeCheckPoint, double factorValue) {
+    /**
+     * 依據病患名(Key)增加關聯的SensorData
+     */
+    private void addSensorDataByPatientName(FactorDataEntity entity) {
 
-        FactorDataTuple tuple = new FactorDataTuple();
-        tuple.setPatientName(patientName);
-        tuple.addSensorData(new SensorData(sensorTypeName, sensorName, timeCheckPoint, factorValue));
+        // 確認要新增SensorData還是 更新Record
+        boolean isSensorDataExist = false;
 
-        return tuple;
-
-    }
-
-    public void printDate() {
-
-        for (Map.Entry<String, FactorDataTuple> entry : tuples.entrySet()) {
-            String key = entry.getKey();
-            FactorDataTuple value = entry.getValue();
-            // now work with key and value...
-            printMessageInFormat(value);
+        for (SensorData tmp : tuples.get(entity.getPatientName())) {
+            if (tmp.getSensorName().equalsIgnoreCase(entity.getSensorName())) {
+                //有找到sensor是要去更新Record
+                isSensorDataExist = true;
+                tmp.getRecords().add(entity.getRecord());
+            }
         }
+
+        if (!isSensorDataExist) {
+            // 新增SensorData
+            SensorData sensorData = new SensorData();
+            sensorData.setSensorTypeName(entity.getSensorTypeName());
+            sensorData.setSensorName(entity.getSensorName());
+            List<Record> recordList = new ArrayList<>();
+            recordList.add(entity.getRecord());
+            sensorData.setRecords(recordList);
+
+            this.tuples.get(entity.getPatientName()).add(sensorData);
+        }
+
     }
 
-    private void printMessageInFormat(FactorDataTuple tuple) {
+    public void printData() {
 
+        for (Map.Entry<String, List<SensorData>> entry : tuples.entrySet()) {
+            String patientName = entry.getKey();
+            System.out.println("patient " + patientName);
 
+            List<SensorData> value = entry.getValue();
+            for (SensorData tmpData : value) {
+                System.out.println(tmpData.getSensorTypeName() + " " + tmpData.getSensorName());
+                for (Record tmpRecord : tmpData.getRecords()) {
+                    System.out.println("[" + tmpRecord.getTimeCheckPoint() + "]" + " " + tmpRecord.getFactorValue());
+                }
+            }
+        }
     }
 
 }

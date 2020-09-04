@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ public class Quiz {
     public static List<Patient> patientList = new ArrayList<>();
 
     public static List<Sensor> sensorList = new ArrayList<>();
+
+    public static FactorDatabase factorDatabase = new FactorDatabase();
 
     public static void main(String[] args) throws Exception {
 
@@ -75,8 +78,6 @@ public class Quiz {
 //                    + ", attached to " + tmp.getIsAttachedTo() + ", safe range :" + tmp.getSafeRangeLowerBound() + "~" + tmp.getSafeRangeUpperBound());
 //        }
 
-        FactorDatabase database = new FactorDatabase();
-
         // TODO 開始倒數
         for (long index = 0; index <= allTimePeriod; index += 1) {
 
@@ -96,7 +97,13 @@ public class Quiz {
                         }
 
                         // TODO 監控的當下去存DB
-//                        database.save(pt.getName() , pt , ptSensor , index , ptSensor.showValue());
+                        FactorDataEntity entity = new FactorDataEntity();
+                        entity.setSensorTypeName(ptSensor.getSensorTypeName());
+                        entity.setSensorName(ptSensor.getDeviceName());
+                        entity.setPatientName(pt.getName());
+                        Record updateRecord = new Record(index,ptSensor.showValue());
+                        entity.setRecord(updateRecord);
+                        factorDatabase.add(entity);
                         ptSensor.incrementCounter();
                     }
 
@@ -105,6 +112,7 @@ public class Quiz {
             }
 
         }
+        factorDatabase.printData();
 
     }
 
