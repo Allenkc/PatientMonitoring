@@ -42,15 +42,8 @@ public class FactorDatabase {
 
         } else {
             // 寫入全新資料
-            SensorData updataData = new SensorData();
-            updataData.setSensorTypeName(entity.getSensorTypeName());
-            updataData.setSensorName(entity.getSensorName());
-            List<Record> recordList = new ArrayList<>();
-            recordList.add(entity.getRecord());
-            updataData.setRecords(recordList);
-
             List<SensorData> sensorDataList = new ArrayList<>();
-            sensorDataList.add(updataData);
+            sensorDataList.add(this.makeSensorData(entity));
             tuples.put(entity.getPatientName(), sensorDataList);
         }
 
@@ -74,15 +67,26 @@ public class FactorDatabase {
 
         if (!isSensorDataExist) {
             // 新增SensorData
-            SensorData sensorData = new SensorData();
-            sensorData.setSensorTypeName(entity.getSensorTypeName());
-            sensorData.setSensorName(entity.getSensorName());
-            List<Record> recordList = new ArrayList<>();
-            recordList.add(entity.getRecord());
-            sensorData.setRecords(recordList);
-
-            this.tuples.get(entity.getPatientName()).add(sensorData);
+            this.tuples.get(entity.getPatientName()).add(this.makeSensorData(entity));
         }
+
+    }
+
+    /**
+     * 組出要去新增或是更新的 SensorData
+     * @param entity
+     * @return
+     */
+    private SensorData makeSensorData(FactorDataEntity entity) {
+
+        SensorData updateData = new SensorData();
+        updateData.setSensorTypeName(entity.getSensorTypeName());
+        updateData.setSensorName(entity.getSensorName());
+        List<Record> recordList = new ArrayList<>();
+        recordList.add(entity.getRecord());
+        updateData.setRecords(recordList);
+
+        return updateData;
 
     }
 
